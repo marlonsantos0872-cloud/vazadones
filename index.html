@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#140000">
+  <title>Desbloquear</title>
+  <style>
+    :root {
+      --bg: #0a0a0a;
+      --bg2: #140000;
+      --red: #e10600;
+      --red-dark: #8b0000;
+      --text: #f5f5f5;
+      --muted: #b3b3b3;
+      --track: #1a1a1a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
+      font-family: Arial, Helvetica, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top, rgba(225, 6, 0, 0.25), transparent 35%),
+        radial-gradient(circle at bottom, rgba(139, 0, 0, 0.35), transparent 40%),
+        linear-gradient(180deg, var(--bg2), var(--bg));
+      overflow-x: hidden;
+    }
+
+    .card {
+      width: min(100%, 420px);
+      padding: 48px 28px 36px;
+      text-align: center;
+      background: rgba(10, 10, 10, 0.72);
+      border: 1px solid rgba(225, 6, 0, 0.35);
+      border-radius: 24px;
+      box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.03), 0 20px 60px rgba(0, 0, 0, 0.6), 0 0 40px rgba(225, 6, 0, 0.12);
+      backdrop-filter: blur(6px);
+    }
+
+    .lock {
+      width: 88px;
+      height: 88px;
+      margin: 0 auto 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: radial-gradient(circle, rgba(225, 6, 0, 0.25), rgba(225, 6, 0, 0.05));
+      border: 1px solid rgba(225, 6, 0, 0.45);
+      box-shadow: 0 0 30px rgba(225, 6, 0, 0.2);
+    }
+
+    .lock-icon {
+      position: relative;
+      width: 46px;
+      height: 56px;
+      filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.45));
+    }
+
+    .lock-shackle {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      width: 30px;
+      height: 30px;
+      transform: translateX(-50%);
+      border: 6px solid transparent;
+      border-radius: 15px 15px 0 0;
+      background:
+        linear-gradient(180deg, #f2f2f2, #9a9a9a) padding-box,
+        linear-gradient(90deg, #7a7a7a, #f7f7f7, #8a8a8a) border-box;
+      border-bottom: none;
+      box-shadow:
+        inset 2px 2px 2px rgba(255, 255, 255, 0.55),
+        inset -2px 0 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .lock-shackle::before,
+    .lock-shackle::after {
+      content: "";
+      position: absolute;
+      bottom: -2px;
+      width: 6px;
+      height: 8px;
+      background: linear-gradient(180deg, #bdbdbd, #8f8f8f);
+      border-radius: 1px;
+    }
+
+    .lock-shackle::before { left: -6px; }
+    .lock-shackle::after { right: -6px; }
+
+    .lock-body {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 46px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(180deg, #ff4a4a 0%, #d90000 42%, #7a0000 100%);
+      border: 1px solid rgba(255, 140, 140, 0.25);
+      box-shadow:
+        inset 0 2px 3px rgba(255, 255, 255, 0.35),
+        inset 0 -5px 8px rgba(0, 0, 0, 0.35),
+        0 2px 0 rgba(255, 255, 255, 0.04);
+      overflow: hidden;
+    }
+
+    .lock-body::before {
+      content: "";
+      position: absolute;
+      top: 4px;
+      left: 5px;
+      right: 5px;
+      height: 8px;
+      border-radius: 6px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.28), rgba(255, 255, 255, 0));
+    }
+
+    .lock-body::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 255, 255, 0.12), transparent 30%, transparent 70%, rgba(0, 0, 0, 0.12));
+      pointer-events: none;
+    }
+
+    .lock-keyhole {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      width: 9px;
+      height: 9px;
+      transform: translateX(-50%);
+      background: radial-gradient(circle at 35% 35%, #3a0000, #120000 70%);
+      border-radius: 50%;
+      box-shadow: 0 1px 0 rgba(255, 255, 255, 0.12), inset 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    .lock-keyhole::after {
+      content: "";
+      position: absolute;
+      top: 6px;
+      left: 50%;
+      width: 4px;
+      height: 8px;
+      transform: translateX(-50%);
+      background: linear-gradient(180deg, #220000, #120000);
+      border-radius: 0 0 2px 2px;
+    }
+
+    h1 {
+      font-size: clamp(1.7rem, 5vw, 2.2rem);
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: var(--muted);
+      font-size: 0.98rem;
+      margin-bottom: 34px;
+      line-height: 1.5;
+    }
+
+    .slider {
+      position: relative;
+      height: 64px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, #151515, var(--track));
+      border: 1px solid rgba(225, 6, 0, 0.35);
+      overflow: hidden;
+      user-select: none;
+      touch-action: none;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+    }
+
+    .slider-fill {
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
+      background: linear-gradient(90deg, rgba(139, 0, 0, 0.95), rgba(225, 6, 0, 0.95));
+    }
+
+    .slider-text {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 72px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-size: 0.82rem;
+      color: rgba(255, 255, 255, 0.88);
+      pointer-events: none;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.8);
+    }
+
+    .slider-text span {
+      background: linear-gradient(90deg, #ffffff 20%, #ff6b6b 50%, #ffffff 80%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      animation: shimmer 2.2s linear infinite;
+    }
+
+    @keyframes shimmer {
+      to { background-position: 200% center; }
+    }
+
+    .handle {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #ff2a2a, var(--red-dark));
+      display: grid;
+      place-items: center;
+      cursor: grab;
+      box-shadow: 0 8px 20px rgba(225, 6, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: transform 0.15s ease;
+      z-index: 2;
+    }
+
+    .handle:active,
+    .handle.dragging {
+      cursor: grabbing;
+      transform: scale(0.98);
+    }
+
+    .handle svg {
+      width: 28px;
+      height: 28px;
+      fill: #fff;
+    }
+
+    .slider.unlocked .slider-text span {
+      animation: none;
+      color: #fff;
+      background: none;
+      -webkit-background-clip: initial;
+      background-clip: initial;
+    }
+
+    .slider.unlocked .handle {
+      cursor: default;
+    }
+
+    .status {
+      min-height: 24px;
+      margin-top: 18px;
+      font-size: 0.9rem;
+      color: #ff8080;
+    }
+
+    @media (max-width: 480px) {
+      .card {
+        padding: 40px 20px 28px;
+        border-radius: 20px;
+      }
+
+      .lock {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 1.7rem;
+      }
+
+      p {
+        font-size: 0.94rem;
+        margin-bottom: 28px;
+      }
+
+      .slider {
+        height: 60px;
+      }
+
+      .handle {
+        width: 52px;
+        height: 52px;
+      }
+
+      .handle svg {
+        width: 26px;
+        height: 26px;
+      }
+
+      .slider-text {
+        padding: 0 64px;
+        font-size: 0.74rem;
+        letter-spacing: 0.05em;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .card {
+        padding: 32px 16px 24px;
+      }
+
+      .slider-text {
+        font-size: 0.68rem;
+        letter-spacing: 0.03em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="lock" aria-hidden="true">
+      <div class="lock-icon">
+        <div class="lock-shackle"></div>
+        <div class="lock-body">
+          <div class="lock-keyhole"></div>
+        </div>
+      </div>
+    </div>
+
+    <h1>Acesso Restrito</h1>
+    <p>Deslize para confirmar que você quer continuar.</p>
+
+    <div class="slider" id="slider" aria-label="Deslize para desbloquear">
+      <div class="slider-fill" id="fill"></div>
+      <div class="slider-text"><span id="text">Deslize para desbloquear</span></div>
+      <div class="handle" id="handle" role="button" aria-label="Deslizar para desbloquear">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M13.172 12 8.222 7.05l1.414-1.414L16 12l-6.364 6.364-1.414-1.414z"/>
+        </svg>
+      </div>
+    </div>
+
+    <div class="status" id="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    const REDIRECT_URL = "https://t.me/vazadonesdanet_bot";
+    const slider = document.getElementById("slider");
+    const handle = document.getElementById("handle");
+    const fill = document.getElementById("fill");
+    const text = document.getElementById("text");
+    const status = document.getElementById("status");
+
+    let dragging = false;
+    let startX = 0;
+    let currentX = 0;
+    let unlocked = false;
+
+    function maxX() {
+      return slider.clientWidth - handle.offsetWidth - 8;
+    }
+
+    function setPosition(x, animate) {
+      const clamped = Math.max(0, Math.min(x, maxX()));
+      currentX = clamped;
+      const transition = animate ? "left 0.25s ease" : "none";
+      handle.style.transition = animate ? "left 0.25s ease, transform 0.15s ease" : "transform 0.15s ease";
+      fill.style.transition = animate ? "width 0.25s ease" : "none";
+      handle.style.left = (4 + clamped) + "px";
+      fill.style.width = (4 + clamped + handle.offsetWidth / 2) + "px";
+    }
+
+    function complete() {
+      if (unlocked) return;
+      unlocked = true;
+      slider.classList.add("unlocked");
+      text.textContent = "Desbloqueado";
+      status.textContent = "Redirecionando...";
+      setPosition(maxX(), true);
+      setTimeout(function () {
+        window.location.href = REDIRECT_URL;
+      }, 350);
+    }
+
+    function onStart(clientX) {
+      if (unlocked) return;
+      dragging = true;
+      startX = clientX - currentX;
+      handle.classList.add("dragging");
+      handle.style.transition = "transform 0.15s ease";
+      fill.style.transition = "none";
+    }
+
+    function onMove(clientX) {
+      if (!dragging || unlocked) return;
+      setPosition(clientX - startX, false);
+    }
+
+    function onEnd() {
+      if (!dragging || unlocked) return;
+      dragging = false;
+      handle.classList.remove("dragging");
+
+      if (currentX >= maxX() * 0.92) {
+        complete();
+      } else {
+        status.textContent = "";
+        setPosition(0, true);
+      }
+    }
+
+    handle.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      handle.setPointerCapture(e.pointerId);
+      onStart(e.clientX);
+    });
+
+    handle.addEventListener("pointermove", function (e) {
+      onMove(e.clientX);
+    });
+
+    handle.addEventListener("pointerup", onEnd);
+    handle.addEventListener("pointercancel", onEnd);
+
+    window.addEventListener("resize", function () {
+      if (unlocked) {
+        setPosition(maxX(), false);
+      } else {
+        setPosition(Math.min(currentX, maxX()), false);
+      }
+    });
+  </script>
+</body>
+</html>
